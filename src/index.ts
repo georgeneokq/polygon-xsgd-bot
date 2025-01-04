@@ -1,5 +1,5 @@
 import { mkdirSync } from "fs";
-import { Bot } from "grammy";
+import { Bot, GrammyError, HttpError } from "grammy";
 import { addSubscriber, getSubscribers, removeSubscriber, subscribersDir } from "./data";
 import { getSwapRate } from "./spot";
 import { sleep } from "./util";
@@ -39,6 +39,19 @@ bot.command("unsub", async (ctx) => {
   removeSubscriber(chatId)
 
   ctx.api.sendMessage(chatId, 'Unsubscribed.')
+})
+
+// Default error handler by grammy
+bot.catch((err) => {
+  // const { ctx } = err
+  const e = err.error;
+  if (e instanceof GrammyError) {
+    console.error("Error in request:", e.description);
+  } else if (e instanceof HttpError) {
+    console.error("Could not contact Telegram:", e);
+  } else {
+    console.error("Unknown error:", e);
+  }
 })
 
 // Start the bot
