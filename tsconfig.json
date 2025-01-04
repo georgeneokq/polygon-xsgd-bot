@@ -1,0 +1,26 @@
+{
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["es2020"],
+    "outDir": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "preserveWatchOutput": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": [".eslintrc.cjs", "*.config.cjs", "src/**/*.ts"],
+  "exclude": []
+}
