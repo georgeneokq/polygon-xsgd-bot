@@ -23,14 +23,14 @@ bot.command("start", async (ctx) => {
   const { chatId } = ctx
   addSubscriber(chatId)
 
-  ctx.api.sendMessage(chatId, 'Use /unsub to unsubscribe anytime.')
+  await ctx.api.sendMessage(chatId, 'Use /unsub to unsubscribe anytime.')
 
   while(currentPrice === '') {
     // eslint-disable-next-line no-await-in-loop
     await sleep(100)
   }
 
-  ctx.api.sendMessage(chatId, currentPrice)
+  await ctx.api.sendMessage(chatId, currentPrice)
 })
 
 // Add user to subscriber list
@@ -38,7 +38,7 @@ bot.command("unsub", async (ctx) => {
   const { chatId } = ctx
   removeSubscriber(chatId)
 
-  ctx.api.sendMessage(chatId, 'Unsubscribed.')
+  await ctx.api.sendMessage(chatId, 'Unsubscribed.')
 })
 
 // Default error handler by grammy
@@ -68,6 +68,6 @@ setInterval(async () => {
   currentPrice = swapRateRounded
 
   for (const subscriber of Object.keys(await getSubscribers())) {
-    bot.api.sendMessage(subscriber, swapRateRounded)
+    bot.api.sendMessage(subscriber, swapRateRounded).catch(reason => console.log(reason))
   }
 }, 5000);
