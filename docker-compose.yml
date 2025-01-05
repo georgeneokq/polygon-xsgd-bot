@@ -1,6 +1,7 @@
 services:
   polygonxsgdbot:
     container_name: polygon_xsgd_bot
+    restart: always
     build:
       context: .
       dockerfile: ./Dockerfile
