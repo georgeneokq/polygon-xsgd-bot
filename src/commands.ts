@@ -45,17 +45,17 @@ export async function uniswapQuote(args: string[], ctx: Context) {
 
   const { amountUSDC, amountXSGD } = await getNeededTokenAmountsForPosition(roundDecimal(desiredAmtUsd, 2).toString(), slot0, tickLower, tickUpper)
 
-  const requiredAmountsStr = `Required USDC: ${+ethers.formatUnits(amountUSDC, 6)}\nRequired XSGD: ${+ethers.formatUnits(amountXSGD, 6)}`
+  const requiredAmountsStr = `1 USDC -> ${usdcXsgdSwapRate.toFixed(5)} XSGD\nRequired USDC: ${(+ethers.formatUnits(amountUSDC, 6)).toFixed(5)}\nRequired XSGD: ${(+ethers.formatUnits(amountXSGD, 6)).toFixed(5)}`
 
   if (balanceXSGD < amountXSGD) {
     const neededXSGD = +ethers.formatUnits(amountXSGD, 6) - balanceXSGD
     // Add 0.5% to the swap amount to account for potential slippage
-    const usdToSell = (neededXSGD * xsgdUsdcSwapRate * 1.005).toFixed(6)
+    const usdToSell = (neededXSGD * xsgdUsdcSwapRate * 1.005).toFixed(5)
     await ctx.reply(`${requiredAmountsStr}\nAction: Sell ${usdToSell} USDC`)
   } else if (balanceUSDC < amountUSDC) {
     const neededUSDC = +ethers.formatUnits(amountUSDC, 6) - balanceUSDC
     // Add 0.5% to the swap amount to account for potential slippage
-    const sgdToSell = (neededUSDC * usdcXsgdSwapRate * 1.005).toFixed(6)
+    const sgdToSell = (neededUSDC * usdcXsgdSwapRate * 1.005).toFixed(5)
     await ctx.reply(`${requiredAmountsStr}\nAction: Sell ${sgdToSell} XSGD`)
   } else {
     await ctx.reply('No action required')
