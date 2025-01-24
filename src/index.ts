@@ -2,7 +2,9 @@ import { mkdirSync } from "fs";
 import { Bot, GrammyError, HttpError } from "grammy";
 import { addSubscriber, getSubscribers, removeSubscriber, subscribersDir } from "./data";
 import { getSwapRate } from "./spot";
-import { sleep } from "./util";
+import { getArgs, sleep } from "./util";
+import { uniswapQuote } from "./commands";
+import { USDC_ADDRESS, XSGD_ADDRESS } from "./contract";
 
 const botToken = process.env.BOT_TOKEN
 
@@ -15,7 +17,7 @@ const bot = new Bot(botToken)
 let currentPrice = ''
 
 ;(async () => {
-  currentPrice = (await getSwapRate()).toFixed(5)
+  currentPrice = (await getSwapRate(USDC_ADDRESS, XSGD_ADDRESS)).toFixed(5)
 })()
 
 // Add user to subscriber list and send initial price update
@@ -41,6 +43,21 @@ bot.command("unsub", async (ctx) => {
   await ctx.api.sendMessage(chatId, 'Unsubscribed.')
 })
 
+bot.on('message:text', async (ctx) => {
+  const msg = ctx.message.text
+  
+  // No args, return.
+  // If not, take first arg as the command to trigger
+  const args = getArgs(msg)
+  if(args.length) {
+    const [command, ...commandArgs] = args
+
+    if(command === 'uniswap') {
+      await uniswapQuote(commandArgs, ctx)
+    }
+  }
+})
+
 // Default error handler by grammy
 bot.catch((err) => {
   // const { ctx } = err
@@ -60,7 +77,7 @@ bot.start()
 mkdirSync(subscribersDir, { recursive: true })
 
 setInterval(async () => {
-  const swapRate = await getSwapRate()
+  const swapRate = await getSwapRate(USDC_ADDRESS, XSGD_ADDRESS)
   const swapRateRounded = swapRate.toFixed(5)
 
   if (swapRateRounded === currentPrice) return

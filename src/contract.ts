@@ -1,5 +1,8 @@
 export const SPOT_PRICE_CONTRACT_ADDRESS = '0xE85B42805e046D1933EB8e1C543C4da4E5e8fFa3'
 export const SPOT_PRICE_CONTRACT_ABI = '[{"inputs":[{"internalType":"address","name":"_factory","type":"address"},{"internalType":"bytes32","name":"_initcodeHash","type":"bytes32"},{"internalType":"uint24[]","name":"_fees","type":"uint24[]"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"ConnectorShouldBeNone","type":"error"},{"inputs":[],"name":"PoolNotFound","type":"error"},{"inputs":[],"name":"PoolWithConnectorNotFound","type":"error"},{"inputs":[],"name":"FACTORY","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"INITCODE_HASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"SUPPORTED_FEES_COUNT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"fees","outputs":[{"internalType":"uint24","name":"","type":"uint24"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"contract IERC20","name":"srcToken","type":"address"},{"internalType":"contract IERC20","name":"dstToken","type":"address"},{"internalType":"contract IERC20","name":"connector","type":"address"},{"internalType":"uint256","name":"thresholdFilter","type":"uint256"}],"name":"getRate","outputs":[{"internalType":"uint256","name":"rate","type":"uint256"},{"internalType":"uint256","name":"weight","type":"uint256"}],"stateMutability":"view","type":"function"}]'
 
-export const XSGD_ADDRESS = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
-export const USDC_ADDRESS = '0xDC3326e71D45186F113a2F448984CA0e8D201995'
+export const USDC_ADDRESS = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
+export const XSGD_ADDRESS = '0xDC3326e71D45186F113a2F448984CA0e8D201995'
+
+export const UNISWAP_CONTRACT_ADDRESS = '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
+export const UNISWAP_FACTORY_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
