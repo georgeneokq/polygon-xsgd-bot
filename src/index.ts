@@ -14,10 +14,12 @@ if (!botToken) {
 
 const bot = new Bot(botToken)
 
-let currentPrice = ''
+const formatPrices = (usdcXsgdRate: number, xsgdUsdcRate: number) => `${usdcXsgdRate.toFixed(5)} ${xsgdUsdcRate.toFixed(5)}`
+
+let currentPriceUsdcXsgd = ''
 
 ;(async () => {
-  currentPrice = (await getSwapRate(USDC_ADDRESS, XSGD_ADDRESS)).toFixed(5)
+  currentPriceUsdcXsgd = (await getSwapRate(USDC_ADDRESS, XSGD_ADDRESS)).toFixed(5)
 })()
 
 // Add user to subscriber list and send initial price update
@@ -27,12 +29,12 @@ bot.command("start", async (ctx) => {
 
   await ctx.api.sendMessage(chatId, 'Use /unsub to unsubscribe anytime.')
 
-  while(currentPrice === '') {
+  while(currentPriceUsdcXsgd === '') {
     // eslint-disable-next-line no-await-in-loop
     await sleep(100)
   }
 
-  await ctx.api.sendMessage(chatId, currentPrice)
+  await ctx.api.sendMessage(chatId, currentPriceUsdcXsgd)
 })
 
 // Add user to subscriber list
@@ -77,14 +79,19 @@ bot.start()
 mkdirSync(subscribersDir, { recursive: true })
 
 setInterval(async () => {
-  const swapRate = await getSwapRate(USDC_ADDRESS, XSGD_ADDRESS)
-  const swapRateRounded = swapRate.toFixed(5)
+  const [usdcXsgdSwapRate, xsgdUsdcSwapRate] =
+    await Promise.all([
+      getSwapRate(USDC_ADDRESS, XSGD_ADDRESS),
+      getSwapRate(XSGD_ADDRESS, USDC_ADDRESS)
+    ])
+  const usdcXsgdSwapRateRounded = usdcXsgdSwapRate.toFixed(5)
 
-  if (swapRateRounded === currentPrice) return
+  if (usdcXsgdSwapRateRounded === currentPriceUsdcXsgd) return
 
-  currentPrice = swapRateRounded
+  // Update
+  currentPriceUsdcXsgd = usdcXsgdSwapRateRounded
 
   for (const subscriber of Object.keys(await getSubscribers())) {
-    bot.api.sendMessage(subscriber, swapRateRounded).catch(reason => console.log(reason))
+    bot.api.sendMessage(subscriber, formatPrices(usdcXsgdSwapRate, xsgdUsdcSwapRate)).catch(reason => console.log(reason))
   }
 }, 5000);
